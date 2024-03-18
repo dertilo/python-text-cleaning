@@ -3,10 +3,10 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum, auto
 
-
 from python_text_cleaning.character_mappings.text_cleaning import (
     TEXT_CLEANERS,
-    TextCleaner, NeStr,
+    NeStr,
+    TextCleaner,
 )
 
 
@@ -76,7 +76,8 @@ class VocabCasingAwareTextCleaner(TextCleaner):
         if isinstance(self.casing, str):
             self.casing = Casing(self.casing)
         elif isinstance(
-            self.casing, dict
+            self.casing,
+            dict,
         ):  # TODO: somehow Casing gets not deserialized properly!
             self.casing = Casing.create(int(self.casing["value"]))
 

@@ -13,6 +13,7 @@ from python_text_cleaning.character_mappings.not_str_translatable_maps import (
 
 NeStr = Annotated[str, Is[lambda s: len(s) > 0]]
 
+
 class PluginNameConflictError(BaseException):
     """more than 1 plugin of same name"""
 
