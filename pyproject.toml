@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "text-cleaning"
+name = "python-text-cleaning"
 version = "0.0.0"
 description = "mostly mapping characters"
 authors = ["Tilo Himmelsbach <dertilo@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "text_cleaning" }]
+packages = [{ include = "python_text_cleaning" }]
 
 [[tool.poetry.source]]
 name = "PyPI"
@@ -13,6 +13,7 @@ priority = "primary"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+beartype = "^0.17.2"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.2"
