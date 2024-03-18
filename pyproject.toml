@@ -4,6 +4,8 @@ version = "0.0.0"
 description = "mostly mapping characters"
 authors = ["Tilo Himmelsbach <dertilo@gmail.com>"]
 readme = "README.md"
+repository = "https://github.com/dertilo/python-text-cleaning"
+
 packages = [{ include = "python_text_cleaning" }]
 
 [[tool.poetry.source]]
@@ -13,7 +15,7 @@ priority = "primary"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-beartype = "^0.17.2"
+beartype = "^0" # blindly trust beartype
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.4.2"
