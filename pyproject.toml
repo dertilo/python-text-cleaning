@@ -14,7 +14,7 @@ priority = "primary"
 
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 beartype = "^0" # blindly trust beartype
 
 [tool.poetry.group.test.dependencies]
