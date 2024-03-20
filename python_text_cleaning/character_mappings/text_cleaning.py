@@ -1,4 +1,5 @@
 import abc
+import logging
 import re
 import string
 from collections.abc import Callable
@@ -10,6 +11,10 @@ from beartype.vale import Is
 from python_text_cleaning.character_mappings.not_str_translatable_maps import (
     SAME_SAME_BUT_DIFFERENT,
 )
+
+logger = logging.getLogger(
+    __name__.replace("_", "."),
+)  # "The name is potentially a period-separated hierarchical", see: https://docs.python.org/3.10/library/logging.html
 
 NeStr = Annotated[str, Is[lambda s: len(s) > 0]]
 
@@ -36,6 +41,7 @@ def register_normalizer_plugin(name: str) -> Callable:
     ):  # TODO: why does beartype whant another callable? isn't this already the decorator?
         plugin = clazz()
         CHARACTER_MAPPINGS[name] = plugin
+        logger.info(f"registered {plugin.name}")
         return clazz
 
     return register_wrapper

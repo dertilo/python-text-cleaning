@@ -3,6 +3,8 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum, auto
 
+from typing_extensions import Self
+
 from python_text_cleaning.character_mappings.text_cleaning import (
     TEXT_CLEANERS,
     NeStr,
@@ -33,7 +35,7 @@ class Casing(str, Enum):
         return fun
 
     @staticmethod
-    def create(value: str | int) -> "Casing":
+    def create(value: str | int) -> Self:
         """
         # TODO: this is only necessary if someone else mis-interprets "1" as an integer! pythons json lib does it correctly -> somewhere in jina??
         """
