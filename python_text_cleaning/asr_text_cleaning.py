@@ -122,3 +122,10 @@ def clean_upper_lower_text(
 ) -> str:
     text = text_cleaner(text).strip(" ")
     return casing.apply(text)
+
+
+def determine_casing(letter_vocab: Letters) -> Casing:
+    more_than_half_is_upper = (
+        sum([1 if c.upper() == c else 0 for c in letter_vocab]) > len(letter_vocab) / 2
+    )
+    return Casing.upper if more_than_half_is_upper else Casing.lower
