@@ -2,14 +2,15 @@ import re
 from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum, auto
-
-from typing_extensions import Self
+from typing import TypeVar
 
 from python_text_cleaning.character_mappings.text_cleaning import (
     TEXT_CLEANERS,
     NeStr,
     TextCleaner,
 )
+
+TCasing = TypeVar("TCasing", bound="Casing")  # is this really the recommended way?
 
 
 class Casing(str, Enum):
@@ -35,7 +36,7 @@ class Casing(str, Enum):
         return fun
 
     @staticmethod
-    def create(value: str | int) -> Self:
+    def create(value: str | int) -> TCasing:
         """
         # TODO: this is only necessary if someone else mis-interprets "1" as an integer! pythons json lib does it correctly -> somewhere in jina??
         """
@@ -49,7 +50,7 @@ CASING_FUNS: dict[Casing, Callable] = {
 }
 
 
-Letters = str
+Letters = NeStr
 
 
 def upper_lower_text(text: str, casing: Casing = Casing.original) -> str:
