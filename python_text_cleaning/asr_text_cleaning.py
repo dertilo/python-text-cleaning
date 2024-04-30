@@ -73,7 +73,7 @@ class VocabCasingAwareTextCleaner(TextCleaner):
 
     @property
     def name(self) -> NeStr:
-        return f"{self.casing.value.name}-{self.text_cleaner_name}"
+        return f"{self.casing.name}-{self.text_cleaner_name}"
 
     def __post_init__(self) -> None:
         if isinstance(self.casing, str):
