@@ -31,7 +31,7 @@ def test_text_character_mappings(lang_input_output: tuple[str, str, str]) -> Non
     [
         (
             VocabCasingAwareTextCleaner(
-                casing=Casing.lower,
+                casing=Casing.LOWER,
                 text_cleaner_name="de_no_sz",
                 letter_vocab="bcds",
             ),

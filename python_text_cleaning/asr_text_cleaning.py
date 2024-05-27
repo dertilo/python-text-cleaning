@@ -1,7 +1,7 @@
 import re
 from collections.abc import Callable
 from dataclasses import dataclass
-from enum import Enum, auto
+from enum import Enum
 
 from typing_extensions import Self
 
@@ -12,12 +12,12 @@ from python_text_cleaning.character_mappings.text_cleaning import (
 )
 
 
-class Casing(str, Enum):
-    lower = auto()
-    upper = auto()
-    original = auto()
+class Casing(Enum):
+    LOWER = "LOWER"
+    UPPER = "UPPER"
+    original = "ORIGINAL"
 
-    def _to_dict(self, skip_keys: list[str] | None = None) -> dict:
+    def _to_dict(self, skip_keys: list[str] | None = None) -> dict[str, str]:
         obj = self
         module = obj.__class__.__module__
         _target_ = f"{module}.{obj.__class__.__name__}"
@@ -35,16 +35,17 @@ class Casing(str, Enum):
         return fun
 
     @classmethod
-    def create(cls, value: str | int) -> Self:
-        """
-        # TODO: this is only necessary if someone else mis-interprets "1" as an integer! pythons json lib does it correctly -> somewhere in jina??
-        """
-        return Casing(str(value))
+    def create(cls, value: str | dict[str, str]) -> Self:
+        if isinstance(value, dict):
+            value = value["value"]
+        elif value.startswith("Casing."):
+            value = value.split(".")[1]
+        return cls(value)
 
 
-CASING_FUNS: dict[Casing, Callable] = {
-    Casing.upper: lambda s: s.upper(),
-    Casing.lower: lambda s: s.lower(),
+CASING_FUNS: dict[Casing, Callable[[str], str]] = {
+    Casing.UPPER: lambda s: s.upper(),
+    Casing.LOWER: lambda s: s.lower(),
     Casing.original: lambda s: s,
 }
 
@@ -66,29 +67,30 @@ def upper_lower_text(text: str, casing: Casing = Casing.original) -> str:
 
 @dataclass
 class VocabCasingAwareTextCleaner(TextCleaner):
-    casing: str | dict | Casing
+    casing: str | dict[str, str] | Casing
     text_cleaner_name: str
     letter_vocab: Letters
 
     @property
     def name(self) -> NeStr:
+        assert isinstance(self.casing, Casing)
         return f"{self.casing.name}-{self.text_cleaner_name}"
 
     def __post_init__(self) -> None:
         if isinstance(self.casing, str):
             self.casing = Casing(self.casing)
         elif isinstance(
-            self.casing,
-            dict,
+            self.casing, dict  # noqa: COM812
         ):  # TODO: somehow Casing gets not deserialized properly!
-            self.casing = Casing.create(int(self.casing["value"]))
+            self.casing = Casing.create(self.casing["value"])
 
     def __call__(self, text: str) -> str:
+        assert isinstance(self.casing, Casing)
         text = clean_and_filter_text(
-            text,
-            self.letter_vocab,
-            TEXT_CLEANERS[self.text_cleaner_name],
-            self.casing,
+            text=text,
+            vocab_letters=self.letter_vocab,
+            text_cleaner=TEXT_CLEANERS[self.text_cleaner_name],
+            casing=self.casing,
         )
         assert "  " not in text, f"{text=}"
         return text
@@ -128,4 +130,8 @@ def determine_casing(letter_vocab: Letters) -> Casing:
     more_than_half_is_upper = (
         sum([1 if c.upper() == c else 0 for c in letter_vocab]) > len(letter_vocab) / 2
     )
-    return Casing.upper if more_than_half_is_upper else Casing.lower
+    return Casing.UPPER if more_than_half_is_upper else Casing.LOWER
+
+
+if __name__ == "__main__":
+    print(Casing.LOWER)  # noqa: T201
